@@ -178,15 +178,38 @@ def count_change(amount):
     9828
     """
     "*** YOUR CODE HERE ***"
-    def count_partitions(n, m):
-        if n == 0:
-            return 1
-        elif n < 0:
+    # def find_biggest_coin(amount):
+    #     i = 0
+    #     while 2 ** i < amount:
+    #         i += 1
+    #     return 2 ** i
+    #
+    # biggest_coin = find_biggest_coin(amount)
+    #
+    # def count_partitions(n, m):
+    #     if n == 0:
+    #         return 1
+    #     elif n < 0:
+    #         return 0
+    #     elif m == 1:
+    #         return 1
+    #     else:
+    #         return count_partitions(n-m, m) + count_partitions(n, m/2)
+    #
+    # return count_partitions(amount, biggest_coin)
+
+    # Standard solution
+    def count_using(min_coin, amount):
+        if amount < 0:
             return 0
-        elif m == 1:
+        elif amount == 0:
+            return 1
+        elif min_coin > amount:
             return 0
         else:
-            return count_partitions(n-m, m) + count_partitions(n, m/2)
+            return count_using(min_coin, amount - min_coin) + count_using(2 * min_coin, amount)
+
+    return count_using(1, amount)
 
 ###################
 # Extra Questions #
@@ -203,4 +226,4 @@ def make_anonymous_factorial():
     >>> check(HW_SOURCE_FILE, 'make_anonymous_factorial', ['Assign', 'AugAssign', 'FunctionDef', 'Recursion'])
     True
     """
-    return 'YOUR_EXPRESSION_HERE'
+    return (lambda f: lambda k: f(f, k))(lambda f, k: k if k == 1 else mul(k, f(f, sub(k, 1))))
