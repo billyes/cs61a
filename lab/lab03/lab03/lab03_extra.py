@@ -47,6 +47,16 @@ def cycle(f1, f2, f3):
     return ret_fn
 
 ## Lambda expressions
+    # def ret_fn(n):
+    #     if n == 0:
+    #         return lambda x: x
+    #     elif n % 3 == 1:
+    #         return lambda ret_fn(n - 1): f1(ret_fn(n - 1))
+    #     elif n % 3 == 2:
+    #         return lambda ret_fn(n - 1): f2(ret_fn(n - 1))
+    #     else:
+    #         return lambda ret_fn(n - 1): f3(ret_fn(n - 1))
+    # return ret_fn
 
 def is_palindrome(n):
     """
@@ -63,9 +73,9 @@ def is_palindrome(n):
     True
     """
     x, y = n, 0
-    f = lambda: _____
+    f = lambda: 10 * y + x % 10
     while x > 0:
-        x, y = _____, f()
+        x, y = x // 10, f()
     return y == n
 
 ## More recursion practice
@@ -78,7 +88,9 @@ def skip_mul(n):
     >>> skip_mul(8) # 8 * 6 * 4 * 2
     384
     """
-    if n == 2:
+    if n == 1:
+        return 1
+    elif n == 2:
         return 2
     else:
         return n * skip_mul(n - 2)
@@ -94,6 +106,14 @@ def is_prime(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    def helper(i):
+        if i > n ** 0.5:
+            return True
+        elif n % i == 0:
+            return False
+        else:
+            return helper(i + 1)
+    return helper(2)
 
 def interleaved_sum(n, odd_term, even_term):
     """Compute the sum odd_term(1) + even_term(2) + odd_term(3) + ..., up
@@ -104,6 +124,14 @@ def interleaved_sum(n, odd_term, even_term):
     29
     """
     "*** YOUR CODE HERE ***"
+    def helper(term0, term1, k):
+        if k == n:
+            return term0(k)
+        else:
+            return term0(k) + helper(term1, term0, k+1)
+
+    return helper(odd_term, even_term, 1)
+
 
 def ten_pairs(n):
     """Return the number of ten-pairs within positive integer n.
@@ -116,3 +144,16 @@ def ten_pairs(n):
     6
     """
     "*** YOUR CODE HERE ***"
+    def count_digit(n, target):
+        if n == 0:
+            return 0
+        else:
+            if n % 10 == target:
+                return count_digit(n // 10, target) + 1
+            else:
+                return count_digit(n // 10, target)
+
+    if n < 10:
+        return 0
+    else:
+        return ten_pairs(n // 10) + count_digit(n // 10, 10 - n % 10)
