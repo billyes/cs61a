@@ -22,7 +22,9 @@ def build_successors_table(tokens):
     for word in tokens:
         if prev not in table:
             "*** YOUR CODE HERE ***"
+            table[prev] = []
         "*** YOUR CODE HERE ***"
+        table[prev].append(word)
         prev = word
     return table
 
@@ -40,6 +42,8 @@ def construct_sent(word, table):
     result = ''
     while word not in ['.', '!', '?']:
         "*** YOUR CODE HERE ***"
+        result = result + ' ' + word
+        word = random.choice(table[word])
     return result.strip() + word
 
 def shakespeare_tokens(path='shakespeare.txt', url='http://composingprograms.com/shakespeare.txt'):
@@ -53,8 +57,8 @@ def shakespeare_tokens(path='shakespeare.txt', url='http://composingprograms.com
         return shakespeare.read().decode(encoding='ascii').split()
 
 # Uncomment the following two lines
-# tokens = shakespeare_tokens()
-# table = build_successors_table(tokens)
+tokens = shakespeare_tokens()
+table = build_successors_table(tokens)
 
 def random_sent():
     import random
@@ -86,6 +90,16 @@ def prune_leaves(t, vals):
       6
     """
     "*** YOUR CODE HERE ***"
+    if is_leaf(t) and (label(t) in vals):
+        return None
+
+    new_branches = []
+    for b in branches(t):
+        new_branch = prune_leaves(b, vals)
+        if new_branch:
+            new_branches.append(new_branch)
+
+    return tree(label(t), new_branches)
 
 # Q9
 def sprout_leaves(t, vals):
@@ -122,6 +136,14 @@ def sprout_leaves(t, vals):
           2
     """
     "*** YOUR CODE HERE ***"
+    if is_leaf(t):
+        return tree(label(t), [tree(v) for v in vals])
+
+    new_branches = []
+    for b in branches(t):
+        new_branches.append(sprout_leaves(b, vals))
+
+    return tree(label(t), new_branches)
 
 # Q10
 def add_trees(t1, t2):
@@ -160,3 +182,16 @@ def add_trees(t1, t2):
       5
     """
     "*** YOUR CODE HERE ***"
+
+    if not t1:
+        return t2
+    if not t2:
+        return t1
+    new_label = label(t1) + label(t2)
+    t1_children, t2_children = branches(t1), branches(t2)
+    length_t1, length_t2 = len(t1_children), len(t2_children)
+    if length_t1 < length_t2:
+        t1_children += [None for _ in range(length_t1, length_t2)]
+    elif len(t1_children) > len(t2_children):
+        t2_children += [None for _ in range(length_t2, length_t1)]
+    return tree(new_label, [add_trees(child1, child2) for child1, child2 in zip(t1_children, t2_children)])
