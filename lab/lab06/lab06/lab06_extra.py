@@ -20,3 +20,15 @@ def vending_machine(snacks):
     'chocolate'
     """
     "*** YOUR CODE HERE ***"
+    index = 0
+
+    def vendor():
+        nonlocal index
+
+        print('\'' + snacks[index] + '\'')
+
+        index += 1
+        if index == len(snacks):
+            index = 0
+
+    return vendor
